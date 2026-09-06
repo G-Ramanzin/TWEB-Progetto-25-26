@@ -1,0 +1,77 @@
+{{!-- Person detail: identity, alternate names, voice roles and staff works with real titles --}}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/people">Persone</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{person.name}}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        {{#if person.imageUrl}}
+        <img src="{{person.imageUrl}}" class="img-fluid rounded shadow" alt="{{person.name}}"
+             onerror="this.style.display='none'">
+        {{/if}}
+    </div>
+    <div class="col-md-9">
+        <h1 class="h2">{{person.name}}</h1>
+        {{#if person.birthday}}<p class="text-muted mb-1"><i class="bi bi-cake2"></i> {{truncate person.birthday 10}}</p>{{/if}}
+        {{#if person.location}}<p class="text-muted"><i class="bi bi-geo-alt"></i> {{person.location}}</p>{{/if}}
+        {{#if person.favorites}}
+        <p><span class="badge bg-danger fs-6"><i class="bi bi-heart-fill"></i> {{formatNumber person.favorites}} preferiti</span></p>
+        {{/if}}
+
+        {{#if alternateNames.length}}
+        <p>
+            <span class="text-muted small">Conosciuto anche come:</span>
+            {{#each alternateNames}}<span class="badge bg-secondary me-1">{{this}}</span>{{/each}}
+        </p>
+        {{/if}}
+
+        {{#if person.websiteUrl}}
+        <p class="mt-3"><a href="{{person.websiteUrl}}" target="_blank" rel="noopener"
+              class="btn btn-sm btn-outline-secondary"><i class="bi bi-globe"></i> Sito web</a></p>
+        {{/if}}
+    </div>
+</div>
+
+{{#if voiceWorks.length}}
+<section class="mt-5">
+    <h2 class="h4 mb-3"><i class="bi bi-mic"></i> Ruoli di doppiaggio</h2>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead><tr><th>Anime</th><th>Personaggio</th><th>Ruolo</th><th>Lingua</th></tr></thead>
+            <tbody>
+                {{#each voiceWorks}}
+                <tr>
+                    <td>{{#if this.animeTitle}}<a href="/anime/{{this.animeId}}" class="text-decoration-none">{{this.animeTitle}}</a>{{else}}Anime #{{this.animeId}}{{/if}}</td>
+                    <td>{{#if this.characterName}}<a href="/character/{{this.characterId}}" class="text-decoration-none">{{this.characterName}}</a>{{else}}—{{/if}}</td>
+                    <td>{{this.role}}</td>
+                    <td>{{this.language}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</section>
+{{/if}}
+
+{{#if animeWorks.length}}
+<section class="mt-5">
+    <h2 class="h4 mb-3"><i class="bi bi-briefcase"></i> Lavori di produzione</h2>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead><tr><th>Anime</th><th>Posizione</th></tr></thead>
+            <tbody>
+                {{#each animeWorks}}
+                <tr>
+                    <td>{{#if this.title}}<a href="/anime/{{this.animeId}}" class="text-decoration-none">{{this.title}}</a>{{else}}Anime #{{this.animeId}}{{/if}}</td>
+                    <td>{{this.position}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</section>
+{{/if}}

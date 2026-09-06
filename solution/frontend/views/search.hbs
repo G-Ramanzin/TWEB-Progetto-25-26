@@ -1,0 +1,58 @@
+{{!-- Anime search page with filters and pagination --}}
+<h1 class="h3 mb-4"><i class="bi bi-search"></i> Cerca Anime</h1>
+
+<form method="get" action="/search" class="card p-3 mb-4">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <label class="form-label small" for="q">Titolo</label>
+            <input id="q" type="text" name="q" value="{{query.q}}" class="form-control" placeholder="es. One Piece">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small" for="genre">Genere</label>
+            <select id="genre" name="genre" class="form-select">
+                <option value="">Tutti i generi</option>
+                {{#each genres}}
+                <option value="{{this}}" {{#if (eq this ../query.genre)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small" for="type">Formato</label>
+            <select id="type" name="type" class="form-select">
+                <option value="">Tutti</option>
+                {{#each types}}
+                <option value="{{this}}" {{#if (eq this ../query.type)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100" type="submit"><i class="bi bi-funnel"></i> Filtra</button>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted">{{formatNumber totalElements}} risultati</p>
+
+{{#if results.length}}
+<div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+    {{#each results}}
+        {{> anime-card}}
+    {{/each}}
+</div>
+
+{{#ifCond totalPages '>' 1}}
+<nav aria-label="Pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {{#unless hasPrev}}disabled{{/unless}}">
+            <a class="page-link" href="/search?q={{query.q}}&genre={{query.genre}}&type={{query.type}}&status={{query.status}}&page={{math page '-' 1}}">&laquo; Prec</a>
+        </li>
+        <li class="page-item disabled"><span class="page-link">Pagina {{math page '+' 1}} di {{totalPages}}</span></li>
+        <li class="page-item {{#unless hasNext}}disabled{{/unless}}">
+            <a class="page-link" href="/search?q={{query.q}}&genre={{query.genre}}&type={{query.type}}&status={{query.status}}&page={{math page '+' 1}}">Succ &raquo;</a>
+        </li>
+    </ul>
+</nav>
+{{/ifCond}}
+{{else}}
+<div class="alert alert-info">Nessun anime trovato. Prova con altri filtri.</div>
+{{/if}}

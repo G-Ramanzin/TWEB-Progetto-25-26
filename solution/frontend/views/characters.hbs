@@ -1,0 +1,50 @@
+{{!-- Character browsing page: popularity grid with name search --}}
+<h1 class="h3 mb-4"><i class="bi bi-people"></i> Personaggi</h1>
+
+<form method="get" action="/characters" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="q" value="{{q}}" class="form-control" placeholder="Cerca un personaggio, es. Lelouch">
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Cerca</button>
+    </div>
+</form>
+
+<p class="text-muted">{{formatNumber totalElements}} personaggi</p>
+
+{{#if characters.length}}
+<div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+    {{#each characters}}
+    <div class="col">
+        <div class="card h-100 text-center">
+            {{#if this.imageUrl}}
+            <img src="{{this.imageUrl}}" class="card-img-top character-img" alt="{{this.name}}" loading="lazy"
+                 onerror="this.style.display='none'">
+            {{/if}}
+            <div class="card-body p-2">
+                <a href="/character/{{this.characterId}}" class="stretched-link text-decoration-none small fw-semibold">{{this.name}}</a>
+                {{#if this.favorites}}
+                <div class="text-muted small"><i class="bi bi-heart"></i> {{formatNumber this.favorites}}</div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+{{#ifCond totalPages '>' 1}}
+<nav aria-label="Pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {{#unless hasPrev}}disabled{{/unless}}">
+            <a class="page-link" href="/characters?q={{q}}&page={{math page '-' 1}}">&laquo; Prec</a>
+        </li>
+        <li class="page-item disabled"><span class="page-link">Pagina {{math page '+' 1}} di {{totalPages}}</span></li>
+        <li class="page-item {{#unless hasNext}}disabled{{/unless}}">
+            <a class="page-link" href="/characters?q={{q}}&page={{math page '+' 1}}">Succ &raquo;</a>
+        </li>
+    </ul>
+</nav>
+{{/ifCond}}
+{{else}}
+<div class="alert alert-info">Nessun personaggio trovato.</div>
+{{/if}}

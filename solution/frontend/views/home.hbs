@@ -1,0 +1,73 @@
+{{!-- Home page: hero with search, platform overview, top rated grid, most favourited list --}}
+<section class="hero rounded-3 p-5 mb-4 text-center text-white">
+    <h1 class="display-5 fw-bold">Esplora il mondo degli Anime</h1>
+    <p class="lead">Esplora {{#if overview}}{{formatNumber overview.totalRatings}}{{else}}milioni di{{/if}} valutazioni, migliaia di titoli, personaggi e doppiatori.</p>
+    <form action="/search" method="get" class="row justify-content-center g-2 mt-3">
+        <div class="col-md-6">
+            <input type="text" name="q" class="form-control form-control-lg" placeholder="Prova con 'Cowboy Bebop'...">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-warning btn-lg" type="submit"><i class="bi bi-search"></i> Cerca</button>
+        </div>
+    </form>
+</section>
+
+{{#if overview}}
+<section class="row text-center g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="fs-3 fw-bold">{{formatNumber overview.totalUsers}}</div>
+            <div class="text-muted">Utenti</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="fs-3 fw-bold">{{formatNumber overview.totalRatings}}</div>
+            <div class="text-muted">Valutazioni</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="fs-3 fw-bold">{{formatNumber overview.totalFavorites}}</div>
+            <div class="text-muted">Preferiti</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card p-3">
+            <div class="fs-3 fw-bold">{{overview.averageScore}}</div>
+            <div class="text-muted">Voto medio</div>
+        </div>
+    </div>
+</section>
+{{/if}}
+
+<section class="mb-5">
+    <h2 class="h4 mb-3"><i class="bi bi-trophy text-warning"></i> Anime più votati</h2>
+    {{#if topAnime.length}}
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        {{#each topAnime}}
+            {{> anime-card}}
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="alert alert-warning">Nessun dato disponibile. Hai importato i dataset e avviato il server Spring Boot?</div>
+    {{/if}}
+</section>
+
+{{#if topFavs.length}}
+<section class="mb-5">
+    <h2 class="h4 mb-3"><i class="bi bi-heart-fill text-danger"></i> I più amati</h2>
+    <ul class="list-group">
+        {{#each topFavs}}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{#if this.anime}}
+                <a href="/anime/{{this.anime.animeId}}" class="text-decoration-none">{{this.anime.title}}</a>
+            {{else}}
+                Anime #{{this.item_id}}
+            {{/if}}
+            <span class="badge bg-danger rounded-pill">{{formatNumber this.favoriteCount}} <i class="bi bi-heart"></i></span>
+        </li>
+        {{/each}}
+    </ul>
+</section>
+{{/if}}

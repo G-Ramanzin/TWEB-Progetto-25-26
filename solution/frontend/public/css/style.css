@@ -1,0 +1,55 @@
+/* ============================================================
+   Anime Explorer - custom styles on top of Bootstrap 5
+   ============================================================ */
+
+body {
+    background-color: #f5f6fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* --- Home hero --- */
+.hero {
+    background: linear-gradient(135deg, #1f2340 0%, #4a2a6b 60%, #7b3fa0 100%);
+}
+
+/* --- Cards --- */
+.anime-card,
+.stat-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.anime-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.anime-card-img {
+    height: 240px;
+    object-fit: cover;
+}
+
+.character-img {
+    height: 200px;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* --- Text blocks --- */
+.synopsis {
+    line-height: 1.7;
+    color: #444;
+}
+
+/* --- Charts --- */
+.chart-wrap {
+    position: relative;
+    height: 320px;
+}

@@ -1,0 +1,54 @@
+<h1 class="h2 mb-4"><i class="bi bi-arrow-left-right"></i> Consigli</h1>
+
+<form method="get" action="/recommendations" class="d-flex mb-4 col-md-6">
+    <input type="number" class="form-control me-2" name="animeId" value="{{animeId}}"
+           placeholder="Filtra per id anime, es. 1 (Cowboy Bebop)" min="1">
+    <button type="submit" class="btn btn-primary">Filtra</button>
+    {{#if animeId}}<a href="/recommendations" class="btn btn-outline-secondary ms-2">Reset</a>{{/if}}
+</form>
+
+{{#if animeId}}
+    {{#if sourceAnime}}
+    <p class="lead">Se ti è piaciuto
+        <a href="/anime/{{sourceAnime.animeId}}" class="text-decoration-none fw-bold">{{sourceAnime.title}}</a>,
+        gli utenti consigliano:</p>
+    {{/if}}
+
+    {{#if recommended.length}}
+    <div class="list-group col-lg-8">
+        {{#each recommended}}
+        <a href="/anime/{{this.animeId}}"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span>{{this.title}}</span>
+            {{#if this.score}}
+            <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> {{this.score}}</span>
+            {{/if}}
+        </a>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="alert alert-light border">Nessun consiglio trovato per l'anime #{{animeId}}.</div>
+    {{/if}}
+{{else}}
+    <p class="text-secondary">Gli anime più consigliati dalla community
+        (numero di anime i cui fan li indicano):</p>
+
+    {{#if ranking.length}}
+    <div class="table-responsive col-lg-8">
+        <table class="table table-hover align-middle">
+            <thead><tr><th>#</th><th>Anime</th><th class="text-end">Consigliato da</th></tr></thead>
+            <tbody>
+                {{#each ranking}}
+                <tr>
+                    <td class="text-secondary">{{math @index '+' 1}}</td>
+                    <td><a href="/anime/{{this.anime.animeId}}" class="text-decoration-none">{{this.anime.title}}</a></td>
+                    <td class="text-end"><span class="badge bg-primary rounded-pill">{{this.recommendedBy}} anime</span></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="alert alert-light border">Nessun dato sui consigli. Il server MongoDB è avviato?</div>
+    {{/if}}
+{{/if}}

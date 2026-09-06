@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="bi bi-collection-play"></i> Anime Explorer
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Apri navigazione">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/search"><i class="bi bi-search"></i> Cerca</a></li>
+                <li class="nav-item"><a class="nav-link" href="/characters"><i class="bi bi-people"></i> Personaggi</a></li>
+                <li class="nav-item"><a class="nav-link" href="/people"><i class="bi bi-person-badge"></i> Persone</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recommendations"><i class="bi bi-stars"></i> Consigli</a></li>
+                <li class="nav-item"><a class="nav-link" href="/statistics"><i class="bi bi-bar-chart"></i> Statistiche</a></li>
+            </ul>
+            <form class="d-flex" action="/search" method="get" role="search">
+                <input class="form-control me-2" type="search" name="q" placeholder="Cerca un anime..." aria-label="Cerca">
+                <button class="btn btn-outline-light" type="submit">Vai</button>
+            </form>
+        </div>
+    </div>
+</nav>

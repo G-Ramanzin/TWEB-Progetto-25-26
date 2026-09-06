@@ -1,0 +1,113 @@
+{{!-- Anime detail: static info + ratings chart + characters (with names) + recommendations (with titles) --}}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/search">Cerca</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{anime.title}}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        {{#if anime.imageUrl}}
+        <img src="{{anime.imageUrl}}" class="img-fluid rounded shadow" alt="{{anime.title}}"
+             onerror="this.style.display='none'">
+        {{/if}}
+        <ul class="list-group mt-3 small">
+            {{#if anime.type}}<li class="list-group-item d-flex justify-content-between"><strong>Formato</strong><span>{{anime.type}}</span></li>{{/if}}
+            {{#if anime.episodes}}<li class="list-group-item d-flex justify-content-between"><strong>Episodi</strong><span>{{anime.episodes}}</span></li>{{/if}}
+            {{#if anime.status}}<li class="list-group-item d-flex justify-content-between"><strong>Stato</strong><span>{{anime.status}}</span></li>{{/if}}
+            {{#if anime.startDate}}<li class="list-group-item d-flex justify-content-between"><strong>Inizio</strong><span class="text-end">{{truncate anime.startDate 10}}</span></li>{{/if}}
+            {{#if anime.endDate}}<li class="list-group-item d-flex justify-content-between"><strong>Fine</strong><span class="text-end">{{truncate anime.endDate 10}}</span></li>{{/if}}
+            {{#if anime.season}}<li class="list-group-item d-flex justify-content-between"><strong>Stagione</strong><span>{{anime.season}} {{anime.year}}</span></li>{{/if}}
+            {{#if anime.source}}<li class="list-group-item d-flex justify-content-between"><strong>Fonte</strong><span>{{anime.source}}</span></li>{{/if}}
+            {{#if anime.rating}}<li class="list-group-item d-flex justify-content-between"><strong>Classificazione</strong><span>{{anime.rating}}</span></li>{{/if}}
+            {{#if anime.studios}}<li class="list-group-item d-flex justify-content-between"><strong>Studi</strong><span class="text-end">{{anime.studios}}</span></li>{{/if}}
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+        <h1 class="h2">{{anime.title}}</h1>
+        {{#if anime.titleJapanese}}<p class="text-muted">{{anime.titleJapanese}}</p>{{/if}}
+
+        <div class="d-flex flex-wrap gap-3 my-3">
+            {{#if anime.score}}
+            <div class="badge bg-warning text-dark fs-6 p-2"><i class="bi bi-star-fill"></i> Voto MAL {{anime.score}}</div>
+            {{/if}}
+            {{#if ratings}}
+            <div class="badge bg-primary fs-6 p-2"><i class="bi bi-people-fill"></i> {{ratings.averageRating}} su {{formatNumber ratings.totalRatings}} voti utente</div>
+            {{/if}}
+            {{#if favs}}
+            <div class="badge bg-danger fs-6 p-2"><i class="bi bi-heart-fill"></i> {{formatNumber favs.favoriteCount}} preferiti</div>
+            {{/if}}
+            {{#if anime.animeRank}}
+            <div class="badge bg-secondary fs-6 p-2">Rank #{{anime.animeRank}}</div>
+            {{/if}}
+        </div>
+
+        {{#if anime.genres}}
+        <p><span class="text-muted small">Generi:</span> {{anime.genres}}</p>
+        {{/if}}
+
+        {{#if anime.synopsis}}
+        <h2 class="h5 mt-4">Trama</h2>
+        <p class="synopsis">{{anime.synopsis}}</p>
+        {{/if}}
+
+        {{#if ratings.distribution.length}}
+        <h2 class="h5 mt-4">Distribuzione dei voti utente</h2>
+        <div class="chart-wrap"><canvas id="ratingChart"
+            data-chart="bar"
+            data-labels='{{json (pluck ratings.distribution "rating")}}'
+            data-values='{{json (pluck ratings.distribution "count")}}'
+            data-label="Voti"></canvas></div>
+        {{/if}}
+
+        {{#if stats}}
+        <h2 class="h5 mt-4">Stato di visione</h2>
+        <div class="row text-center g-2 small">
+            <div class="col"><div class="card p-2">{{formatNumber stats.watching}}<br><span class="text-muted">In visione</span></div></div>
+            <div class="col"><div class="card p-2">{{formatNumber stats.completed}}<br><span class="text-muted">Completato</span></div></div>
+            <div class="col"><div class="card p-2">{{formatNumber stats.on_hold}}<br><span class="text-muted">In pausa</span></div></div>
+            <div class="col"><div class="card p-2">{{formatNumber stats.dropped}}<br><span class="text-muted">Abbandonato</span></div></div>
+            <div class="col"><div class="card p-2">{{formatNumber stats.plan_to_watch}}<br><span class="text-muted">Pianificato</span></div></div>
+        </div>
+        {{/if}}
+    </div>
+</div>
+
+{{#if characters.length}}
+<section class="mt-5">
+    <h2 class="h4 mb-3"><i class="bi bi-people"></i> Personaggi</h2>
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        {{#each characters}}
+        <div class="col">
+            <div class="card h-100 text-center">
+                {{#if this.imageUrl}}
+                <img src="{{this.imageUrl}}" class="card-img-top character-img" alt="{{this.name}}" loading="lazy"
+                     onerror="this.style.display='none'">
+                {{/if}}
+                <div class="card-body p-2">
+                    <a href="/character/{{this.characterId}}" class="stretched-link text-decoration-none small fw-semibold">{{this.name}}</a>
+                    {{#if this.role}}<div class="text-muted small">{{this.role}}</div>{{/if}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</section>
+{{/if}}
+
+{{#if recommendations.length}}
+<section class="mt-5">
+    <h2 class="h4 mb-3"><i class="bi bi-stars"></i> Gli utenti consigliano anche</h2>
+    <ul class="list-group">
+        {{#each recommendations}}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/anime/{{this.other.animeId}}" class="text-decoration-none">{{this.other.title}}</a>
+            <i class="bi bi-chevron-right text-secondary"></i>
+        </li>
+        {{/each}}
+    </ul>
+</section>
+{{/if}}
