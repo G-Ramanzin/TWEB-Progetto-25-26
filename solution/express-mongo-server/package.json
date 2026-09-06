@@ -1,0 +1,22 @@
+{
+  "name": "anime-mongo-server",
+  "version": "1.0.0",
+  "description": "Express server for the dynamic anime data subset (MongoDB): ratings, recommendations, favourites, stats, profiles",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "import": "node scripts/import-data.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0",
+    "morgan": "^1.10.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
