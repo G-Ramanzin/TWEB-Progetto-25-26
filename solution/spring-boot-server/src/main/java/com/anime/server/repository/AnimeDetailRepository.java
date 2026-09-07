@@ -20,14 +20,23 @@ public interface AnimeDetailRepository extends JpaRepository<AnimeDetail, Long> 
      * Full search with optional filters. Every parameter may be null,
      * in which case the corresponding filter is ignored. The text is
      * matched against both the main and the Japanese title.
+     * <p>
+     * The CASTs are required by PostgreSQL: a null parameter inside
+     * LOWER/CONCAT cannot be type-inferred and would be bound as
+     * {@code bytea}, making the query fail at runtime.
+     * <p>
+     * Ordering lives in the query because Spring Data silently drops
+     * {@code NullHandling} on JPQL sorts: without {@code NULLS LAST}
+     * PostgreSQL would list unscored anime first.
      */
     @Query("""
             SELECT a FROM AnimeDetail a
-            WHERE (:q IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :q, '%'))
-                             OR LOWER(a.titleJapanese) LIKE LOWER(CONCAT('%', :q, '%')))
-              AND (:genre IS NULL OR LOWER(a.genres) LIKE LOWER(CONCAT('%', :genre, '%')))
+            WHERE (:q IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', CAST(:q AS STRING), '%'))
+                             OR LOWER(a.titleJapanese) LIKE LOWER(CONCAT('%', CAST(:q AS STRING), '%')))
+              AND (:genre IS NULL OR LOWER(a.genres) LIKE LOWER(CONCAT('%', CAST(:genre AS STRING), '%')))
               AND (:type IS NULL OR a.type = :type)
               AND (:status IS NULL OR a.status = :status)
+            ORDER BY a.score DESC NULLS LAST, a.animeId
             """)
     Page<AnimeDetail> search(@Param("q") String q,
                              @Param("genre") String genre,

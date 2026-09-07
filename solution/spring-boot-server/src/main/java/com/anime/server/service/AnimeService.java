@@ -8,7 +8,6 @@ import com.anime.server.repository.CharacterAnimeWorkRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,14 +31,12 @@ public class AnimeService {
 
     /**
      * Search anime with optional filters; blank filters are ignored.
-     * Results are ordered by score descending.
+     * Ordering (score DESC, nulls last) is defined inside the JPQL
+     * query: Spring Data ignores {@code NullHandling} on JPQL sorts.
      */
     public Page<AnimeDetail> search(String q, String genre, String type, String status,
                                     int page, int size) {
-        Sort sort = Sort.by(
-                new Sort.Order(Sort.Direction.DESC, "score", Sort.NullHandling.NULLS_LAST),
-                Sort.Order.asc("animeId"));
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page, size);
         return animeRepo.search(blankToNull(q), blankToNull(genre),
                 blankToNull(type), blankToNull(status), pageable);
     }
@@ -63,7 +60,7 @@ public class AnimeService {
     public List<String> allGenres() {
         return animeRepo.findAllGenreStrings().stream()
                 .flatMap(s -> Arrays.stream(s.split(",")))
-                .map(String::trim)
+                .map(AnimeService::cleanListToken)
                 .filter(s -> !s.isEmpty())
                 .distinct()
                 .sorted()
@@ -80,7 +77,7 @@ public class AnimeService {
         Map<String, Integer> counts = new HashMap<>();
         animeRepo.findAllGenreStrings().forEach(s ->
                 Arrays.stream(s.split(","))
-                        .map(String::trim)
+                        .map(AnimeService::cleanListToken)
                         .filter(g -> !g.isEmpty())
                         .forEach(g -> counts.merge(g, 1, Integer::sum)));
 
@@ -101,6 +98,15 @@ public class AnimeService {
     public List<AnimeSummaryDTO> summaries(Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) return List.of();
         return animeRepo.findSummariesByIds(ids);
+    }
+
+    /**
+     * Cleans one token of a CSV list column: the dataset stores lists
+     * as Python-style strings like {@code ['Action', 'Adventure']},
+     * so brackets and quotes must be stripped.
+     */
+    private static String cleanListToken(String s) {
+        return s == null ? "" : s.replaceAll("[\\[\\]'\"]", "").trim();
     }
 
     private static String blankToNull(String s) {
