@@ -22,7 +22,7 @@
             {{#if anime.season}}<li class="list-group-item d-flex justify-content-between"><strong>Stagione</strong><span>{{anime.season}} {{anime.year}}</span></li>{{/if}}
             {{#if anime.source}}<li class="list-group-item d-flex justify-content-between"><strong>Fonte</strong><span>{{anime.source}}</span></li>{{/if}}
             {{#if anime.rating}}<li class="list-group-item d-flex justify-content-between"><strong>Classificazione</strong><span>{{anime.rating}}</span></li>{{/if}}
-            {{#if anime.studios}}<li class="list-group-item d-flex justify-content-between"><strong>Studi</strong><span class="text-end">{{anime.studios}}</span></li>{{/if}}
+            {{#if anime.studios}}<li class="list-group-item d-flex justify-content-between"><strong>Studi</strong><span class="text-end">{{cleanList anime.studios}}</span></li>{{/if}}
         </ul>
     </div>
 

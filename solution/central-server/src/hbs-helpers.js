@@ -76,7 +76,21 @@ module.exports = {
      * @returns {string[]}
      */
     split(str) {
-        return str ? String(str).split(',') : [];
+        // The dataset stores lists as Python-style strings like
+        // "['Action', 'Adventure']": brackets and quotes are stripped.
+        return str ? String(str).replace(/[\[\]'"]/g, '').split(',') : [];
+    },
+
+    /**
+     * Renders a Python-style list string as readable text:
+     * "['A', 'B']" -> "A, B". Empty lists become an empty string.
+     * @param {string} str
+     * @returns {string}
+     */
+    cleanList(str) {
+        if (!str) return '';
+        return String(str).replace(/[\[\]'"]/g, '').split(',')
+            .map(t => t.trim()).filter(Boolean).join(', ');
     },
 
     /**
