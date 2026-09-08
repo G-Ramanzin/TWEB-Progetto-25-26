@@ -26,9 +26,21 @@ async function forward(url, req, res) {
         const response = await axios.get(url, { params: req.query, timeout: PROXY_TIMEOUT });
         res.json(response.data);
     } catch (err) {
-        const status = err.response ? err.response.status : 502;
-        const body = err.response ? err.response.data : { error: 'Backend unreachable' };
-        console.error(`[PROXY] ${url} -> ${status}`);
+        // A timeout (ECONNABORTED) is not the same failure as a dead
+        // backend: report 504 vs 502 so the cause is visible.
+        let status;
+        let body;
+        if (err.response) {
+            status = err.response.status;
+            body = err.response.data;
+        } else if (err.code === 'ECONNABORTED') {
+            status = 504;
+            body = { error: 'Backend timeout' };
+        } else {
+            status = 502;
+            body = { error: 'Backend unreachable' };
+        }
+        console.error(`[PROXY] ${url} -> ${status} (${err.code || 'HTTP'})`);
         res.status(status).json(body);
     }
 }
