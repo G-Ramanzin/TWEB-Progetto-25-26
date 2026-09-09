@@ -233,8 +233,8 @@ public class CsvImportRunner implements CommandLineRunner {
         long imported = 0;
         long skipped = 0;
 
-        // UTF-8 esplicito: il charset di default su Windows (Cp1252)
-        // corromperebbe i caratteri giapponesi del dataset.
+        // Explicit UTF-8: the default charset on Windows (Cp1252)
+        // would corrupt the Japanese characters in the dataset.
         try (CSVReader reader = new CSVReaderBuilder(
                 new FileReader(file.toFile(), StandardCharsets.UTF_8)).build()) {
             String[] headerRow = reader.readNext();
